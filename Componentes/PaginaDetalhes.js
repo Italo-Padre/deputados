@@ -2,12 +2,10 @@ import React from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css' ;
 import { Button, Container, Form, Nav, NavDropdown, Navbar } from 'react-bootstrap';
 
-
-const Pagina = (props) => {
-  
+const PaginaDetalhes = (props) => {
   return (
     <div>
-         <Navbar fixed="top" bg="success" expand="lg">
+                <Navbar fixed="top" bg="success" expand="lg">
       <Container fluid>
         <Navbar.Brand>{props.titulo}</Navbar.Brand>
         <Navbar.Toggle aria-controls="navbarScroll" />
@@ -24,17 +22,6 @@ const Pagina = (props) => {
               <NavDropdown.Item href="/comparador">Comparador</NavDropdown.Item>
             </NavDropdown>
           </Nav>
-          <Form className="d-flex">
-            <Form.Control
-              type="search"
-              placeholder="Pesquisar"
-              className="me-2"
-              aria-label="Search"
-              value={props.value}
-              onChange={props.onChange}
-            />
-            
-          </Form>
         </Navbar.Collapse>
       </Container>
     </Navbar>
@@ -43,4 +30,4 @@ const Pagina = (props) => {
   )
 }
 
-export default Pagina
+export default PaginaDetalhes

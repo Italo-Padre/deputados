@@ -2,18 +2,20 @@ import ApiDeputados from "@/services/ApiDeputados";
 import React, { useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Pagina from "@/Componentes/Pagina";
-import { Card, Container, Row } from "react-bootstrap";
+import { Button, Card, Container, Pagination, Row } from "react-bootstrap";
 import Link from "next/link";
 
 const index = ({ deputado}) => {
- 
+  const [busca, setBusca] = useState('')
+  const deputadosFiltrados = deputado.filter((item) => item.nome.toLowerCase().includes(busca.toLowerCase()));
+
   return (
     <>
-      <Pagina titulo='Projeto Api Deputados' />
+      <Pagina titulo='Projeto Api Deputados' value={busca} onChange={(ev) => setBusca(ev.target.value)}/>
       <Container>
         <Row md={6}>
-          {deputado.map(item => (
-            <Link href={'/detalhes/' + item.id}><Card.Img key={item.id} title={item.nome} variant="top" src={item.urlFoto}></Card.Img></Link>
+          {deputadosFiltrados.map(item => (
+            <Link key={item.id} href={'/detalhes/' + item.id}><Card.Img key={item.id} title={item.nome} variant="top" src={item.urlFoto}></Card.Img></Link>
           ))}
         </Row>
       </Container>
