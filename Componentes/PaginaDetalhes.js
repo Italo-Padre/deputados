@@ -26,6 +26,10 @@ const PaginaDetalhes = (props) => {
       </Container>
     </Navbar>
     <br/><br/><br/>
+    <Container>
+
+    {props.children}
+    </Container>
     </div>
   )
 }

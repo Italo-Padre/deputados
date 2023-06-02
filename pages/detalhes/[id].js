@@ -1,24 +1,22 @@
 import Pagina from '@/Componentes/Pagina'
 import ApiDeputados from '@/services/ApiDeputados'
-import React, { useState } from 'react'
-import { Accordion, Card, Col, Container, Row, Table } from 'react-bootstrap'
+import React, { useEffect, useState } from 'react'
+import { Accordion, Button, Card, Col, Container, Form, Row, Table, Toast } from 'react-bootstrap'
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, } from 'chart.js';
 import { Bar, Line } from 'react-chartjs-2';
 import PaginaDetalhes from '@/Componentes/PaginaDetalhes';
+import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/router';
 
 function soma(despesas) {
   let soma = 0
   {
     despesas.map(item => {
-      soma +=  item.valorLiquido
-      
+      soma += item.valorLiquido
     })
     return soma
   }
 }
-
-
-
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -39,14 +37,35 @@ const options = {
     },
   },
 };
-const detalhes = ({ infPessoais, despesaJan, despesaFev, despesaMar, despesaAbr,despesaMai }) => {
+const detalhes = ({ infPessoais, despesaJan, despesaFev, despesaMar, despesaAbr, despesaMai }) => {
+  const [comentarios, setComentarios] = useState([])
+
+  useEffect(() => {
+    setComentarios(getAll)
+  }, [])
+
+  function getAll() {
+    return JSON.parse(window.localStorage.getItem('comentarios')) || []
+  }
+
+  const { register, handleSubmit } = useForm()
+
+  function salvar(dados) {
+    const coment = JSON.parse(window.localStorage.getItem('comentarios')) || []
+    coment.push(dados)
+    window.localStorage.setItem('comentarios', JSON.stringify(coment))
+    window.location.reload()
+
+  }
+
   const totalJan = soma(despesaJan).toFixed(2)
   const totalFev = soma(despesaFev).toFixed(2)
   const totalMar = soma(despesaMar).toFixed(2)
   const totalAbr = soma(despesaAbr).toFixed(2)
   const totalMai = soma(despesaMai).toFixed(2)
 
-  const labels = ['Janeiro', 'Fevereiro', 'Março','Abril','Maio'];
+
+  const labels = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio'];
   const data = {
     labels,
     datasets: [
@@ -57,7 +76,7 @@ const detalhes = ({ infPessoais, despesaJan, despesaFev, despesaMar, despesaAbr,
         borderColor: 'red',
         borderWidth: 1
       },
-      
+
     ],
   };
 
@@ -85,11 +104,49 @@ const detalhes = ({ infPessoais, despesaJan, despesaFev, despesaMar, despesaAbr,
             <p><strong>Partido: </strong>{infPessoais.ultimoStatus.siglaPartido}</p>
           </Col>
           <Col md={5}>
-           <h2>Grafico de Gastos de 2023</h2>
+            <h2>Grafico de Gastos de 2023</h2>
             <Bar options={options} data={data} />
           </Col>
         </Row>
-       
+        <h3>Confira o que as pessoas comentaram sobre os deputados</h3>
+        <Row>
+          {comentarios.map(item => (
+            <Col md={3}>
+              <Toast className='mb-1' >
+                <Toast.Header closeButton={false}>
+                  <strong className="me-auto">{item.nome}</strong>
+                  <small>{item.data}</small>
+                </Toast.Header>
+                <Toast.Body>{item.comentario}</Toast.Body>
+              </Toast>
+            </Col>
+          ))}
+        </Row>
+        <h3>Deixe sua opinião sobre nossos deputados</h3>
+        <Form className="mb-3">
+          <Row>
+          <Col md={6}>
+          <Form.Group className="mb-3" controlId="nome">
+            <Form.Label>Nome</Form.Label>
+            <Form.Control  {...register('nome')} type="email" placeholder="Seu nome:" />
+          </Form.Group>
+          </Col>
+          <Col md={6}>
+          <Form.Group className="mb-3" controlId="nome">
+            <Form.Label>Data</Form.Label>
+            <Form.Control  {...register('data')} type="date" placeholder="Seu nome:" />
+          </Form.Group>
+          </Col>
+          </Row>
+          <Form.Group className="mb-3" controlId="comentario">
+            <Form.Label>Deixe sua Opinião sobre os Deputados</Form.Label>
+            <Form.Control {...register('comentario')} as="textarea" rows={3} />
+          </Form.Group>
+          <Button variant="success" onClick={handleSubmit(salvar)}>
+            Publicar
+          </Button>
+        </Form>
+
       </Container>
     </>
   )
@@ -116,7 +173,7 @@ export async function getServerSideProps(context) {
   const despesaMai = despesasMa.data.dados
 
   return {
-    props: { infPessoais, despesaJan, despesaFev, despesaMar, despesaAbr,despesaMai }
+    props: { infPessoais, despesaJan, despesaFev, despesaMar, despesaAbr, despesaMai }
   }
 }
 export default detalhes
