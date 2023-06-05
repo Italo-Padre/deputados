@@ -1,12 +1,11 @@
-import Pagina from '@/Componentes/Pagina'
 import ApiDeputados from '@/services/ApiDeputados'
 import React, { useEffect, useState } from 'react'
-import { Accordion, Button, Card, Col, Container, Form, Row, Table, Toast } from 'react-bootstrap'
+import { Button, Card, Col, Container, Form, Row, Table, Toast } from 'react-bootstrap'
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, } from 'chart.js';
 import { Bar, Line } from 'react-chartjs-2';
 import PaginaDetalhes from '@/Componentes/PaginaDetalhes';
 import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/router';
+import { AiOutlineDelete } from 'react-icons/ai'
 
 function soma(despesas) {
   let soma = 0
@@ -55,7 +54,14 @@ const detalhes = ({ infPessoais, despesaJan, despesaFev, despesaMar, despesaAbr,
     coment.push(dados)
     window.localStorage.setItem('comentarios', JSON.stringify(coment))
     window.location.reload()
-
+  }
+  function excluir(id) {
+    if (confirm('Deseja realmente excluir ?')) {
+      const comentarios = getAll()
+      comentarios.splice(id, 1)
+      window.localStorage.setItem('comentarios', JSON.stringify(comentarios))
+      setComentarios(comentarios)
+    }
   }
 
   const totalJan = soma(despesaJan).toFixed(2)
@@ -72,8 +78,8 @@ const detalhes = ({ infPessoais, despesaJan, despesaFev, despesaMar, despesaAbr,
       {
         label: infPessoais.ultimoStatus.nomeEleitoral,
         data: [totalJan, totalFev, totalMar, totalAbr, totalMai],
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-        borderColor: 'red',
+        backgroundColor: 'rgba(0, 255, 0, 0.5)',
+        borderColor: 'green',
         borderWidth: 1
       },
 
@@ -82,8 +88,9 @@ const detalhes = ({ infPessoais, despesaJan, despesaFev, despesaMar, despesaAbr,
 
   return (
     <>
-      <PaginaDetalhes titulo={infPessoais.ultimoStatus.nomeEleitoral} />
-      <Container>
+      <PaginaDetalhes titulo={infPessoais.ultimoStatus.nomeEleitoral} >
+
+      
         <Row>
           <Col md={4}><Card.Img variant="top" src={infPessoais.ultimoStatus.urlFoto}></Card.Img></Col>
           <Col md={3}>
@@ -93,8 +100,8 @@ const detalhes = ({ infPessoais, despesaJan, despesaFev, despesaMar, despesaAbr,
             <p><strong>Data de Nascimento: </strong>{infPessoais.dataNascimento}</p>
             {
               infPessoais.escolaridade ?
-                <p><strong>Escolaridade: </strong>{infPessoais.escolaridade}</p> :
-                <p><strong>Escolaridade: </strong>*Não informado*</p>
+              <p><strong>Escolaridade: </strong>{infPessoais.escolaridade}</p> :
+              <p><strong>Escolaridade: </strong>*Não informado*</p>
             }
             <h2>Informações Profissionais</h2>
             <p><strong>Nome Eleitoral: </strong>{infPessoais.ultimoStatus.nomeEleitoral}</p>
@@ -108,12 +115,12 @@ const detalhes = ({ infPessoais, despesaJan, despesaFev, despesaMar, despesaAbr,
             <Bar options={options} data={data} />
           </Col>
         </Row>
-        <h3>Confira o que as pessoas comentaram sobre os deputados</h3>
         <Row>
-          {comentarios.map(item => (
+          {comentarios.map((item, i) => (
             <Col md={3}>
-              <Toast className='mb-1' >
+              <Toast className='mb-1 mt-3 bg-success' >
                 <Toast.Header closeButton={false}>
+                  <AiOutlineDelete onClick={() => excluir(i)} />
                   <strong className="me-auto">{item.nome}</strong>
                   <small>{item.data}</small>
                 </Toast.Header>
@@ -122,32 +129,37 @@ const detalhes = ({ infPessoais, despesaJan, despesaFev, despesaMar, despesaAbr,
             </Col>
           ))}
         </Row>
-        <h3>Deixe sua opinião sobre nossos deputados</h3>
-        <Form className="mb-3">
-          <Row>
-          <Col md={6}>
-          <Form.Group className="mb-3" controlId="nome">
-            <Form.Label>Nome</Form.Label>
-            <Form.Control  {...register('nome')} type="email" placeholder="Seu nome:" />
-          </Form.Group>
-          </Col>
-          <Col md={6}>
-          <Form.Group className="mb-3" controlId="nome">
-            <Form.Label>Data</Form.Label>
-            <Form.Control  {...register('data')} type="date" placeholder="Seu nome:" />
-          </Form.Group>
-          </Col>
-          </Row>
-          <Form.Group className="mb-3" controlId="comentario">
-            <Form.Label>Deixe sua Opinião sobre os Deputados</Form.Label>
-            <Form.Control {...register('comentario')} as="textarea" rows={3} />
-          </Form.Group>
-          <Button variant="success" onClick={handleSubmit(salvar)}>
-            Publicar
-          </Button>
-        </Form>
-
-      </Container>
+        <Card className='mb-3 mt-3'>
+          <Card.Header className='bg-success text-center'>
+            <h3>Deixe sua opinião sobre nossos deputados preenchendo o formulario a baixo</h3>
+          </Card.Header>
+          <Card.Body>
+            <Form className="mb-3">
+              <Row>
+                <Col md={6}>
+                  <Form.Group className="mb-3" controlId="nome">
+                    <Form.Label>Nome</Form.Label>
+                    <Form.Control  {...register('nome')} type="email" placeholder="Seu nome:" />
+                  </Form.Group>
+                </Col>
+                <Col md={6}>
+                  <Form.Group className="mb-3" controlId="nome">
+                    <Form.Label>Data</Form.Label>
+                    <Form.Control  {...register('data')} type="date" placeholder="Seu nome:" />
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Form.Group className="mb-3" controlId="comentario">
+                <Form.Label>Deixe sua Opinião sobre os Deputados</Form.Label>
+                <Form.Control {...register('comentario')} as="textarea" rows={3} />
+              </Form.Group>
+              <Button variant="success" onClick={handleSubmit(salvar)}>
+                Publicar
+              </Button>
+            </Form>
+          </Card.Body>
+        </Card>
+      </PaginaDetalhes>
     </>
   )
 }
