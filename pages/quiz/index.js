@@ -85,9 +85,9 @@ const index = ({ deputadosTodos }) => {
               
             ) : (
                   <Row>
-              <Card className='text-center'>
+              <Card className='text-center mb-3'>
                  <Card.Body>
-                <Card.Header>Tente advinhar o nome de cada deputado</Card.Header>
+                <Card.Header >Tente advinhar o nome de cada deputado</Card.Header>
                   <span><h2>Questão</h2> {currentQuestion + 1}</span> de {questions.length}
                   <h2>Você pontuou</h2> {score} de {questions.length}
                   </Card.Body>
@@ -96,9 +96,9 @@ const index = ({ deputadosTodos }) => {
                 <Col md={6}>
                   {questions[currentQuestion].questionText}
                 </Col>
-                <Col md={6}>
+                <Col md={4}>
                   {questions[currentQuestion].answerOption.map((answerOption, index) => (
-                    <Button className='m-1' variant="danger" onClick={() => handleAnswer(answerOption.isCorrect)}>
+                    <Button className='m-1' variant="success" onClick={() => handleAnswer(answerOption.isCorrect)}>
                       {answerOption.answerText}
                     </Button>
                   ))}
