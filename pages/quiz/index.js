@@ -39,7 +39,7 @@ const index = ({ deputadosTodos }) => {
     const obj = {
       questionText:
         <Card style={{ width: '19rem', margin: 'auto' }}>
-          <Card.Img key={item.id} variant="top" title={escolhido.nome} src={escolhido.urlFoto} />
+          <Card.Img key={item.id} variant="top"  src={escolhido.urlFoto} />
         </Card>,
       answerOption: answerOption,
     }
@@ -79,7 +79,7 @@ const index = ({ deputadosTodos }) => {
                  <Card.Body>
                 <Card.Header>Gotou do nosso questionario? Tente Novamente</Card.Header>
                   <h2>Sua Pontuação foi</h2> {score} de {questions.length}<br></br>
-                <Button onClick={recarregarAPagina}>Tentar Novamente</Button>
+                <Button className='mt-3 bg-success' onClick={recarregarAPagina}>Tentar Novamente</Button>
                   </Card.Body>
                 </Card>
               

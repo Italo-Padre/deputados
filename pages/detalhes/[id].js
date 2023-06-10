@@ -36,7 +36,7 @@ const options = {
     },
   },
 };
-const detalhes = ({ infPessoais, despesaJan, despesaFev, despesaMar, despesaAbr, despesaMai }) => {
+const detalhes = ({ infPessoais,d }) => {
   const [comentarios, setComentarios] = useState([])
 
   useEffect(() => {
@@ -44,31 +44,31 @@ const detalhes = ({ infPessoais, despesaJan, despesaFev, despesaMar, despesaAbr,
   }, [])
 
   function getAll() {
-    return JSON.parse(window.localStorage.getItem('comentarios')) || []
+    return JSON.parse(window.localStorage.getItem(infPessoais.id )) || []
   }
 
   const { register, handleSubmit } = useForm()
 
   function salvar(dados) {
-    const coment = JSON.parse(window.localStorage.getItem('comentarios')) || []
+    const coment = JSON.parse(window.localStorage.getItem(infPessoais.id )) || []
     coment.push(dados)
-    window.localStorage.setItem('comentarios', JSON.stringify(coment))
+    window.localStorage.setItem(infPessoais.id , JSON.stringify(coment))
     window.location.reload()
   }
   function excluir(id) {
     if (confirm('Deseja realmente excluir ?')) {
       const comentarios = getAll()
       comentarios.splice(id, 1)
-      window.localStorage.setItem('comentarios', JSON.stringify(comentarios))
+      window.localStorage.setItem(infPessoais.id, JSON.stringify(comentarios))
       setComentarios(comentarios)
     }
   }
 
-  const totalJan = soma(despesaJan).toFixed(2)
-  const totalFev = soma(despesaFev).toFixed(2)
-  const totalMar = soma(despesaMar).toFixed(2)
-  const totalAbr = soma(despesaAbr).toFixed(2)
-  const totalMai = soma(despesaMai).toFixed(2)
+  const totalJan = soma(d.despesas[0]).toFixed(2)
+  const totalFev = soma(d.despesas[1]).toFixed(2)
+  const totalMar = soma(d.despesas[2]).toFixed(2)
+  const totalAbr = soma(d.despesas[3]).toFixed(2)
+  const totalMai = soma(d.despesas[4]).toFixed(2)
 
 
   const labels = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio'];
@@ -117,7 +117,7 @@ const detalhes = ({ infPessoais, despesaJan, despesaFev, despesaMar, despesaAbr,
         </Row>
         <Row>
           {comentarios.map((item, i) => (
-            <Col md={3}>
+            <Col key={item.id} md={3}>
               <Toast className='mb-1 mt-3 bg-success' >
                 <Toast.Header closeButton={false}>
                   <AiOutlineDelete onClick={() => excluir(i)} />
@@ -169,23 +169,16 @@ export async function getServerSideProps(context) {
   const deputados = await ApiDeputados.get('/deputados/' + id)
   const infPessoais = deputados.data.dados
 
-  const despesas = await ApiDeputados.get('/deputados/' + id + '/despesas?ano=2023&mes=1')
-  const despesaJan = despesas.data.dados
+  const d = {despesas:[]}
 
-  const despesasF = await ApiDeputados.get('/deputados/' + id + '/despesas?ano=2023&mes=2')
-  const despesaFev = despesasF.data.dados
+  for(let i=1; i<6; i++){
 
-  const despesasM = await ApiDeputados.get('/deputados/' + id + '/despesas?ano=2023&mes=3')
-  const despesaMar = despesasM.data.dados
-
-  const despesasA = await ApiDeputados.get('/deputados/' + id + '/despesas?ano=2023&mes=4')
-  const despesaAbr = despesasA.data.dados
-
-  const despesasMa = await ApiDeputados.get('/deputados/' + id + '/despesas?ano=2023&mes=5')
-  const despesaMai = despesasMa.data.dados
+    const desp = await ApiDeputados.get(`/deputados/${id}/despesas?ano=2023&mes=${i}`)
+    d['despesas'].push(desp.data.dados)
+  }
 
   return {
-    props: { infPessoais, despesaJan, despesaFev, despesaMar, despesaAbr, despesaMai }
+    props: { infPessoais,d }
   }
 }
 export default detalhes

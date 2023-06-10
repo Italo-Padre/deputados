@@ -15,7 +15,7 @@ const index = ({ deputado}) => {
       <Container>
         <Row md={6}>
           {deputadosFiltrados.map(item => (
-            <Link key={item.id} href={'/detalhes/' + item.id}><Card.Img key={item.id} title={item.nome} variant="top" src={item.urlFoto}></Card.Img></Link>
+            <Link key={item.id} href={'/detalhes/' + item.id}><Card.Img  title={item.nome} variant="top" src={item.urlFoto}></Card.Img></Link>
           ))}
         </Row>
       </Container>

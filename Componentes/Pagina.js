@@ -9,7 +9,7 @@ const Pagina = (props) => {
     <div>
          <Navbar fixed="top" bg="success" expand="lg">
       <Container fluid>
-        <Navbar.Brand>{props.titulo}</Navbar.Brand>
+        <Navbar.Brand className='text-white'>{props.titulo}</Navbar.Brand>
         <Navbar.Toggle aria-controls="navbarScroll" />
         <Navbar.Collapse id="navbarScroll">
           <Nav
@@ -17,12 +17,9 @@ const Pagina = (props) => {
             style={{ maxHeight: '100px' }}
             navbarScroll
           >
-            <Nav.Link href="/">Pagina Inicial</Nav.Link>
-            <Nav.Link href="/comparador">Comparador</Nav.Link>
-            <NavDropdown title="Projetos" id="navbarScrollingDropdown">
-              <NavDropdown.Item href="/quiz">Quiz</NavDropdown.Item>
-              <NavDropdown.Item href="/comparador">Comparador</NavDropdown.Item>
-            </NavDropdown>
+            <Nav.Link className='text-white' href="/">Pagina Inicial</Nav.Link>
+            <Nav.Link className='text-white' href="/comparador">Comparador</Nav.Link>
+            <Nav.Link className='text-white' href="/quiz">Quiz</Nav.Link>
           </Nav>
           <Form className="d-flex">
             <Form.Control
