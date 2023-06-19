@@ -19,6 +19,7 @@
     "react-chartjs-2": "^5.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.44.2",
-    "react-icons": "^4.8.0"
+    "react-icons": "^4.8.0",
+    "react-search-autocomplete": "^8.5.2"
   }
 }
