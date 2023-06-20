@@ -39,7 +39,7 @@ const index = ({ deputadosTodos }) => {
     const obj = {
       questionText:
         <Card style={{ width: '19rem', margin: 'auto' }}>
-          <Card.Img key={item.id} variant="top"  src={escolhido.urlFoto} />
+          <Card.Img key={item.id} title={escolhido.nome} variant="top"  src={escolhido.urlFoto} />
         </Card>,
       answerOption: answerOption,
     }

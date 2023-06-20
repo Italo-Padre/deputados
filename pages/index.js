@@ -5,13 +5,15 @@ import Pagina from "@/Componentes/Pagina";
 import { Card, Container, Row } from "react-bootstrap";
 import Link from "next/link";
 import { ReactSearchAutocomplete } from 'react-search-autocomplete'
+import { Autocomplete, TextField } from "@mui/material";
 
 const index = ({ deputado }) => {
   const [busca, setBusca] = useState('')
-  const deputadosFiltrados = deputado.filter((item) => item.nome.toLowerCase().includes(busca.toLowerCase()));
+
+  const deputadosFiltrados = deputado.filter((item) => item.nome.toLowerCase().includes(busca));
   return (
     <>
-      <Pagina titulo='Projeto Api Deputados' value={busca} onChange={(ev) => setBusca(ev.target.value)} /> 
+      <Pagina titulo='Projeto Api Deputados' value={busca} onChange={(ev) => setBusca(ev.target.value)} />
       <Container>
         <Row md={6}>
           {deputadosFiltrados.map(item => (
