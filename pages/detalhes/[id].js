@@ -6,6 +6,7 @@ import { Bar, Line } from 'react-chartjs-2';
 import PaginaDetalhes from '@/Componentes/PaginaDetalhes';
 import { useForm } from 'react-hook-form';
 import { AiOutlineDelete } from 'react-icons/ai'
+import validatorForm from '@/validator/validator';
 
 function soma(despesas) {
   let soma = 0
@@ -47,7 +48,7 @@ const detalhes = ({ infPessoais,d }) => {
     return JSON.parse(window.localStorage.getItem(infPessoais.id )) || []
   }
 
-  const { register, handleSubmit } = useForm()
+  const { register, handleSubmit, formState:{errors} } = useForm()
 
   function salvar(dados) {
     const coment = JSON.parse(window.localStorage.getItem(infPessoais.id )) || []
@@ -139,7 +140,7 @@ const detalhes = ({ infPessoais,d }) => {
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId="nome">
                     <Form.Label>Nome</Form.Label>
-                    <Form.Control  {...register('nome')} type="email" placeholder="Seu nome:" />
+                    <Form.Control {...register('nome')} type="email" placeholder="Seu nome:" />
                   </Form.Group>
                 </Col>
                 <Col md={6}>
@@ -151,7 +152,11 @@ const detalhes = ({ infPessoais,d }) => {
               </Row>
               <Form.Group className="mb-3" controlId="comentario">
                 <Form.Label>Deixe sua Opinião sobre os Deputados</Form.Label>
-                <Form.Control {...register('comentario')} as="textarea" rows={3} />
+                <Form.Control isInvalid={errors.comentario}   {...register('comentario', validatorForm.comentario)} as="textarea" rows={3} />
+                {
+                  errors.comentario &&
+                    <small>{errors.comentario.message}</small>
+                    }
               </Form.Group>
               <Button variant="success" onClick={handleSubmit(salvar)}>
                 Publicar
